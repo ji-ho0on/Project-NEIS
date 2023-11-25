@@ -67,7 +67,6 @@ void AShooterShotgun::SendBullet()
 					if (BulletHitInterface)
 					{
 						int32 RandomDamage = FMath::RandRange(-5, 5);
-						//BulletHitInterface->BulletHit(FireHitResult, GetWeaponDamage() + RandomDamage, GetOwnerCharacter()->GetController(), this);
 						BulletHitInterface->Execute_BulletHit(FireHitResult.GetActor(), FireHitResult, GetWeaponDamage() + RandomDamage, GetOwnerCharacter()->GetController(), this);
 					}
 					else
