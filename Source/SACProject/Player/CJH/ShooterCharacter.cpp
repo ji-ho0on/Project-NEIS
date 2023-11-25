@@ -404,12 +404,15 @@ bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& 
 	if (GEngine && GEngine->GameViewport)
 		GEngine->GameViewport->GetViewportSize(ViewportSize);
 
+	else
+		return false;
+
 	// »≠∏È¿« ¡ﬂæ”
 	FVector2D CrossHairLocation = FVector2D(ViewportSize.X / 2.0f, ViewportSize.Y / 2.0f);
 
 	FVector CrossHairWorldPosition;
 	FVector CrossHairWorldDirection;
-	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(UGameplayStatics::GetPlayerController(this, 0),
+	bool bScreenToWorld = UGameplayStatics::DeprojectScreenToWorld(GetController<APlayerController>(),
 																	CrossHairLocation,
 																	CrossHairWorldPosition,
 																	CrossHairWorldDirection);
@@ -423,9 +426,9 @@ bool AShooterCharacter::TraceUnderCrosshairs(FHitResult& OutHitResult, FVector& 
 		if (OutHitResult.bBlockingHit)
 		{
 			OutHitLocation = OutHitResult.Location;
-
-			return true;
 		}
+
+		return true;
 	}
 
 	return false;

@@ -142,18 +142,18 @@ void AShooterWeapon::SendBullet()
 						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), m_ImpactParticle, BeamHitResult.Location);
 				}
 			}
-		}
 
-		if (IsValid(m_BeamParticleSystem))
-		{
-			UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_BeamParticleSystem, MuzzleSocketTrans.GetLocation());
-		
-			NiagaraComp->SetNiagaraVariableBool(TEXT("User.Trigger"), true);
-			NiagaraComp->SetNiagaraVariableVec3(TEXT("User.MuzzlePosition"), MuzzleSocketTrans.GetLocation());
-		
-			TArray<FVector> ImpactPoints;
-			ImpactPoints.Add(BeamHitResult.Location);
-			UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector(NiagaraComp, TEXT("User.ImpactPositions"), ImpactPoints);
+			if (IsValid(m_BeamParticleSystem))
+			{
+				UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), m_BeamParticleSystem, MuzzleSocketTrans.GetLocation());
+
+				NiagaraComp->SetNiagaraVariableBool(TEXT("User.Trigger"), true);
+				NiagaraComp->SetNiagaraVariableVec3(TEXT("User.MuzzlePosition"), MuzzleSocketTrans.GetLocation());
+
+				TArray<FVector> ImpactPoints;
+				ImpactPoints.Add(BeamHitResult.Location);
+				UNiagaraDataInterfaceArrayFunctionLibrary::SetNiagaraArrayVector(NiagaraComp, TEXT("User.ImpactPositions"), ImpactPoints);
+			}
 		}
 	}
 }
@@ -166,25 +166,26 @@ bool AShooterWeapon::GetBeamEndLocation(const FVector& MuzzleSocketLocation, FHi
 	bool bCrosshairHit = GetOwnerCharacter()->TraceUnderCrosshairs(CrosshairHitResult, OutBeamLocation);
 	if (bCrosshairHit)
 	{
-		OutBeamLocation = CrosshairHitResult.Location;
+		//OutBeamLocation = CrosshairHitResult.Location;
+
+		const FVector FireStart = MuzzleSocketLocation;
+		const FVector StartToEnd = OutBeamLocation - MuzzleSocketLocation;
+		const FVector FireEnd = FireStart + StartToEnd * 1.1f;
+
+		FCollisionQueryParams Param;
+		Param.AddIgnoredActor(this);
+		Param.AddIgnoredActor(GetOwnerCharacter());
+
+		GetWorld()->LineTraceSingleByChannel(OutHitResult, FireStart, FireEnd, ECollisionChannel::ECC_Visibility, Param);
+		if (!OutHitResult.bBlockingHit)
+		{
+			OutHitResult.Location = OutBeamLocation;
+		}
+
+		return true;
 	}
 
-	const FVector FireStart = MuzzleSocketLocation;
-	const FVector StartToEnd = OutBeamLocation - MuzzleSocketLocation;
-	const FVector FireEnd = FireStart + StartToEnd * 1.1f;
-
-	FCollisionQueryParams Param;
-	Param.AddIgnoredActor(this);
-	Param.AddIgnoredActor(GetOwnerCharacter());
-
-	GetWorld()->LineTraceSingleByChannel(OutHitResult, FireStart, FireEnd, ECollisionChannel::ECC_Visibility, Param);
-	if (!OutHitResult.bBlockingHit)
-	{
-		OutHitResult.Location = OutBeamLocation;
-		return false;
-	}
-
-	return true;
+	return false;
 }
 
 void AShooterWeapon::StartFireTimer()
