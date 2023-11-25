@@ -22,13 +22,15 @@ void AShooterLauncher::SendBullet()
 
 		FVector BeamEndLocation;
 		FHitResult CrosshairHitResult;
-		GetOwnerCharacter()->TraceUnderCrosshairs(CrosshairHitResult, BeamEndLocation);
+		bool bCrosshairHit = GetOwnerCharacter()->TraceUnderCrosshairs(CrosshairHitResult, BeamEndLocation);
+		if (bCrosshairHit)
+		{
+			// ¼¦ ¹æÇâ°è»ê
+			const FRotator ShotDir = (BeamEndLocation - MuzzleSocketTrans.GetLocation()).Rotation();
 
-		// ¼¦ ¹æÇâ°è»ê
-		const FRotator ShotDir = (BeamEndLocation - MuzzleSocketTrans.GetLocation()).Rotation();
-
-		// À¯Åº ½ºÆù
-		if (IsValid(m_GrenadeProjectileClass))
-			GetWorld()->SpawnActor<AShooterProjectileBase>(m_GrenadeProjectileClass, MuzzleSocketTrans.GetLocation(), ShotDir);
+			// À¯Åº ½ºÆù
+			if (IsValid(m_GrenadeProjectileClass))
+				GetWorld()->SpawnActor<AShooterProjectileBase>(m_GrenadeProjectileClass, MuzzleSocketTrans.GetLocation(), ShotDir);
+		}
 	}
 }
