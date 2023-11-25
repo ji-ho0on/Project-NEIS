@@ -9,7 +9,7 @@ AShooterExplosive::AShooterExplosive()
 {
 }
 
-void AShooterExplosive::BulletHit_Implementation(FHitResult HitResult)
+void AShooterExplosive::BulletHit_Implementation(const FHitResult& HitResult, float BulletDamage, AController* HitInstigator, AActor* DamageCauser)
 {
 	if (IsValid(m_ExplosionSound))
 		UGameplayStatics::PlaySoundAtLocation(this, m_ExplosionSound, GetActorLocation());

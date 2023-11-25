@@ -41,7 +41,7 @@ public:
 	* IBulletHit interface
 	*/
 public:
-	virtual void BulletHit_Implementation(FHitResult HitResult) override;
+	virtual void BulletHit_Implementation(const FHitResult& HitResult, float BulletDamage, AController* HitInstigator, AActor* DamageCauser) override;
 
 protected:
 	TObjectPtr<AActor> m_Target;

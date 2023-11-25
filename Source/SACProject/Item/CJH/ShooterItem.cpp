@@ -167,6 +167,7 @@ void AShooterItem::ItemInterp(float DeltaTime)
 		FRotator ItemRotation = FRotator(0.0f, CameraRotation.Yaw + m_InterpInitialYawOffset, 0.0f);
 		SetActorRotation(ItemRotation, ETeleportType::TeleportPhysics);
 
+		// 아이템의 크기 조정
 		if (IsValid(m_ItemScaleCurve))
 		{
 			const float ScaleCuverValue = m_ItemScaleCurve->GetFloatValue(ElapsedTime);

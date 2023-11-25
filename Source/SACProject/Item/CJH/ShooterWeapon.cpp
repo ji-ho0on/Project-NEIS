@@ -133,21 +133,14 @@ void AShooterWeapon::SendBullet()
 				IBulletHit* BulletHitInterface = Cast<IBulletHit>(BeamHitResult.GetActor());
 				if (BulletHitInterface)
 				{
-					BulletHitInterface->BulletHit_Implementation(BeamHitResult);
+					int32 RandomDamage = FMath::RandRange(-5, 5);
+					//BulletHitInterface->BulletHit(BeamHitResult, GetWeaponDamage() + RandomDamage, GetOwnerCharacter()->GetController(), this);
+					BulletHitInterface->Execute_BulletHit(BeamHitResult.GetActor(), BeamHitResult, GetWeaponDamage() + RandomDamage, GetOwnerCharacter()->GetController(), this);
 				}
 				else
 				{
 					if (IsValid(m_ImpactParticle))
 						UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), m_ImpactParticle, BeamHitResult.Location);
-				}
-
-				// 데미지 처리
-				AShooterMonster* Monster = Cast<AShooterMonster>(BeamHitResult.GetActor());
-				if (IsValid(Monster))
-				{
-					int32 RandomDamage = FMath::RandRange(-5, 5);
-					UGameplayStatics::ApplyDamage(Monster, GetWeaponDamage() + RandomDamage, GetOwnerCharacter()->GetController(), GetOwnerCharacter(), UDamageType::StaticClass());
-					Monster->ShowDamageText(GetWeaponDamage() + RandomDamage, BeamHitResult.Location);
 				}
 			}
 		}

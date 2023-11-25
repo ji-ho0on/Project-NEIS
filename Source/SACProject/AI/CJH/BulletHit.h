@@ -22,5 +22,5 @@ class SACPROJECT_API IBulletHit
 
 public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	void BulletHit(FHitResult HitResult);
+	void BulletHit(const FHitResult& HitResult, float BulletDamage, AController* HitInstigator, AActor* DamageCauser);
 };

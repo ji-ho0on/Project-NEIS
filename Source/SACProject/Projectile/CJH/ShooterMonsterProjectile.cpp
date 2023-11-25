@@ -78,7 +78,7 @@ void AShooterMonsterProjectile::LockOn()
 	}
 }
 
-void AShooterMonsterProjectile::BulletHit_Implementation(FHitResult HitResult)
+void AShooterMonsterProjectile::BulletHit_Implementation(const FHitResult& HitResult, float BulletDamage, AController* HitInstigator, AActor* DamageCauser)
 {
 	Explosion();
 }

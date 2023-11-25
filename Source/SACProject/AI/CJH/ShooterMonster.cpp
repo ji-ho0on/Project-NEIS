@@ -226,13 +226,17 @@ void AShooterMonster::SpawnProjectile()
 	}
 }
 
-void AShooterMonster::BulletHit_Implementation(FHitResult HitResult)
+void AShooterMonster::BulletHit_Implementation(const FHitResult& HitResult, float BulletDamage, AController* HitInstigator, AActor* DamageCauser)
 {
 	if (IsValid(m_ImpactSound))
 		UGameplayStatics::PlaySoundAtLocation(this, m_ImpactSound, GetActorLocation());
 
 	if (IsValid(m_ImpactParticle))
 		UGameplayStatics::SpawnEmitterAtLocation(GetWorld(), m_ImpactParticle, HitResult.Location);
+
+	UGameplayStatics::ApplyDamage(this, BulletDamage, HitInstigator, DamageCauser, UDamageType::StaticClass());
+
+	ShowDamageText(BulletDamage, HitResult.Location);
 }
 
 void AShooterMonster::SetStunned(bool Stunned)
